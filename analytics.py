@@ -90,10 +90,10 @@ def get_student_courses():
 def main_menu():
     while True:
         print("\n--- 수강신청 분석 시스템 ---")
-        print("1. 각 강의별, 교수별 신청 마일리지 평균")
-        print("2. 각 강의별, 교수별 성공한 수강신청 마일리지 평균")
+        print("1. 각 강의별 평균 신청 마일리지")
+        print("2. 각 강의별 수강신청에 성공한 신청의 평균 신청 마일리지")
         print("3. 교수별 진행하는 강의 조회")
-        print("4. 학생별 수강 중인 강의 조회")
+        print("4. 학생별 수강 성공한 강의 조회")
         print("5. 종료")
         
         choice = input("메뉴를 선택하세요: ")
