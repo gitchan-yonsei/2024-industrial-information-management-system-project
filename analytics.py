@@ -64,34 +64,32 @@ def get_professor_courses():
     cursor.close()
     conn.close()
 
-def get_student_courses():
+def get_all_student_courses():
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("""
-        SELECT 
-            s.name AS student_name,
-            c.name AS course_name,
-            p.name AS professor_name,
-            sem.year,
-            sem.term
-        FROM Enrollments e
-        JOIN Students s ON e.student_id = s.id
-        JOIN Courses c ON e.course_id = c.id
-        JOIN Professors p ON c.professor_id = p.id
-        JOIN Semesters sem ON c.semester_id = sem.id
-        WHERE e.is_success = TRUE
-        ORDER BY s.name, sem.year, sem.term
-    """)
-    for student_name, course_name, professor_name, year, term in cursor.fetchall():
-        print(f"학생: {student_name}, 강의: {course_name}, 교수: {professor_name}, 학기: {year} {term}")
+    
+    # 모든 학생의 student_id 조회
+    cursor.execute("SELECT id FROM Students")
+    
+    # 각 학생에 대해 수강 정보를 출력
+    for (student_id,) in cursor.fetchall():
+        print(f"학생 ID: {student_id}의 수강 강의:")
+        cursor.execute("SELECT get_student_courses_function(%s)", (student_id,))
+        
+        # 수강 정보 출력
+        for (result,) in cursor.fetchall():
+            print(result)
+        print("-" * 40)  # 구분선
+    
     cursor.close()
     conn.close()
+
 
 def main_menu():
     while True:
         print("\n--- 수강신청 분석 시스템 ---")
         print("1. 각 강의별 평균 신청 마일리지")
-        print("2. 각 강의별 수강신청에 성공한 신청의 평균 신청 마일리지")
+        print("2. 각 강의별 수강신청에 성공한 신청의 평균 마일리지")
         print("3. 교수별 진행하는 강의 조회")
         print("4. 학생별 수강 성공한 강의 조회")
         print("5. 종료")
@@ -105,7 +103,7 @@ def main_menu():
         elif choice == '3':
             get_professor_courses()
         elif choice == '4':
-            get_student_courses()
+            get_all_student_courses()
         elif choice == '5':
             print("프로그램을 종료합니다.")
             break
